@@ -93,7 +93,7 @@ class ApacheFormatters(object):
         val['user'] = '-'
         date = dt.now(tz=Local)
         month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.month - 1]
-        val['time'] = date.strftime("%d/{0}/%Y:%H:%M:%S %z".format(month))
+        val['time'] = date.strftime('%Y-%m-%d %H:%M:%S.%f')
         val['request'] = "{0} {1} {2}".format(
               environ.get('REQUEST_METHOD', ''),
               environ.get('PATH_INFO', ''),
@@ -105,7 +105,7 @@ class ApacheFormatters(object):
         val['agent'] = environ.get('HTTP_USER_AGENT', '')
         
         # see http://docs.python.org/3/library/string.html#format-string-syntax
-        FORMAT = '{host} {logname} {user} [{time}] "{request}" '
+        FORMAT = '{host} {logname} {user} {time} "{request}" '
         FORMAT += '{status} {size} "{referer}" "{agent}"'
         return FORMAT.format(**val)
 
@@ -117,7 +117,7 @@ class ApacheFormatters(object):
           https://pypi.python.org/pypi/TinyLogAnalyzer
         """
         rt_us = kwargs.get('rt_us')
-        return ApacheFormatters.format_NCSA_log(*args, **kwargs) + " {0}/{1}".format(int(rt_us/1000000), rt_us)
+        return ApacheFormatters.format_NCSA_log(*args, **kwargs) + " {0}.{1}".format(int(rt_us/1000000), rt_us)
 
 
 def log(handlers, formatter=ApacheFormatter(), **kwargs):
