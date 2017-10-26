@@ -83,10 +83,7 @@ class ApacheFormatters(object):
         val = dict()
         ip_header = kwargs.get('ip_header', None)
         if ip_header:
-            try:
-                val['host'] = environ.get(ip_header, '')
-            except:
-                val['host'] = environ.get('REMOTE_ADDR', '')
+            val['host'] = environ.get('HTTP_X_FORWARDED_FOR', '')
         else:
             val['host'] = environ.get('REMOTE_ADDR', '')
         val['logname'] = '-'
@@ -117,7 +114,7 @@ class ApacheFormatters(object):
           https://pypi.python.org/pypi/TinyLogAnalyzer
         """
         rt_us = kwargs.get('rt_us')
-        return ApacheFormatters.format_NCSA_log(*args, **kwargs) + " {0}.{1}".format(int(rt_us/1000000), rt_us)
+        return ApacheFormatters.format_NCSA_log(*args, **kwargs) + " {0}.{1}".format(int(rt_us/1000000), rt_us%1000000)
 
 
 def log(handlers, formatter=ApacheFormatter(), **kwargs):
